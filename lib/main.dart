@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import './i18n/message.dart';
 
 void main() => runApp(GetMaterialApp(
+      translations: Messages(), // 你的翻译
+      locale: Locale('zh', 'CN'),
+      fallbackLocale: Locale('en', 'US'),
       initialRoute: '/home',
       unknownRoute: GetPage(name: '/notfound', page: () => UnknownRoutePage()),
       getPages: [
@@ -25,6 +29,18 @@ class UnknownRoutePage extends StatelessWidget {
 }
 
 class Home extends StatelessWidget {
+  void changeLocal() {
+    print("当前语言" + Get.locale.toString());
+    switch (Get.locale.toString()) {
+      case 'zh_CN':
+        Get.updateLocale(const Locale('en', 'US'));
+        break;
+      case 'en_US':
+        Get.updateLocale(const Locale('zh', 'CN'));
+        break;
+    }
+  }
+
   @override
   Widget build(context) {
     // 使用Get.put()实例化你的类，使其对当下的所有子路由可用。
@@ -66,7 +82,15 @@ class Home extends StatelessWidget {
                         ],
                       ),
                     )),
-                child: const Text('test get bottomSheet'))
+                child: const Text('test get bottomSheet')),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('english'.tr),
+                ElevatedButton(
+                    onPressed: changeLocal, child: const Text('改变语言'))
+              ],
+            )
           ],
         )),
         floatingActionButton: FloatingActionButton(
