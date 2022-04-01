@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import './i18n/message.dart';
+import './theme/themes.dart';
 
 void main() => runApp(GetMaterialApp(
       translations: Messages(), // 你的翻译
@@ -12,6 +13,7 @@ void main() => runApp(GetMaterialApp(
         GetPage(name: '/home', page: () => Home()),
         GetPage(name: '/other', page: () => Other())
       ],
+      theme: MyThemes.appDarkThemeData,
     ));
 
 class Controller extends GetxController {
@@ -88,9 +90,42 @@ class Home extends StatelessWidget {
               children: [
                 Text('english'.tr),
                 ElevatedButton(
-                    onPressed: changeLocal, child: const Text('改变语言'))
+                    onPressed: changeLocal, child: const Text('改变语言')),
               ],
-            )
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 100,
+                  height: 100,
+                  color: Get.theme.primaryColor,
+                ),
+                TextButton(
+                  onPressed: () {
+                    //手动切换主题
+                    Get.changeTheme(Get.isDarkMode
+                        ? MyThemes.appLightThemeData
+                        : MyThemes.appDarkThemeData);
+                    //这里要设置个延迟,在调用切换主题后并不能立刻生效,会有点延迟,
+                    // 如果不设置延迟会导致取的还是上个主题状态
+                    Future.delayed(Duration(milliseconds: 250), () {
+                      //强制触发 build
+                      Get.forceAppUpdate();
+                      if (Get.isDarkMode) {
+                        print("转换后 darkMode");
+                      } else {
+                        print("转换后 lightMode");
+                      }
+                    });
+                  },
+                  child: Text(
+                    "更换主题",
+                    style: Get.textTheme.headline6, //这里有个问题,就是主题切换,这里的Text并不会更新
+                  ),
+                ),
+              ],
+            ),
           ],
         )),
         floatingActionButton: FloatingActionButton(
